@@ -1,0 +1,47 @@
+version: "3.1"
+services:
+
+  mysql:
+      build: docker/mysql
+      command: --default-authentication-plugin=mysql_native_password
+      ports:
+        - 33032:3306
+      environment:
+        MYSQL_ROOT_PASSWORD: "root"
+        TZ: "Asia/Ho_Chi_Minh"
+        MYSQL_DATABASE: "testapp"
+      volumes:
+        - ./docker/mysql_data:/var/lib/mineql
+      restart: always
+      networks:
+            test_net:
+                ipv4_address: 172.30.1.12
+
+  webserver:
+    image: nginx:alpine
+    working_dir: /application
+    volumes:
+      - ./application:/application
+      - ./docker/nginx:/etc/nginx/conf.d
+    ports:
+      - "8088:80"
+    networks:
+      test_net:
+        ipv4_address: 172.30.1.13
+
+  php-fpm:
+    build: docker/php-fpm
+    working_dir: /application
+    volumes:
+      - ./application:/application
+      - ./docker/php-fpm/php-ini-overrides.ini:/etc/php/8.1/fpm/conf.d/99-overrides.ini
+    networks:
+      test_net:
+        ipv4_address: 172.30.1.14
+
+networks:
+  test_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.0.0/16
