@@ -49,7 +49,11 @@ class Helper
         $html='';
         foreach($users as $key => $user){
                 $html .= '
+                
                     <tr id="'.$user->id.'">
+                        ';if($user->roles != 1) $html.='<th><input class="checkbox_user" value="'.$user->id.'" style="height: 20px; width:20px" type="checkbox" id="user'.$user->id.'" /></th>';
+                        else $html.='<th>&nbsp</th>';
+                        $html.='
                         <th style="width: 50px">'. $user->id .'</th>
                         <th>'.$user->name .'</th>
                         <th>'. $user->DiaChi .'</th>

@@ -14,11 +14,17 @@
         <button style="width:150px" type="button" class="btn btn-danger" data-toggle="modal" id="delete_all_user">
             Xóa hết
         </button>
+        <button style="width:150px" type="button" class="btn btn-secondary" data-toggle="modal" id="search_user_button">
+            <i class="fa fa-search" >Tìm kiếm</i>
+        </button>
     </div>
 <!-- Table of User List -->
     <table class="table" style="width:1000px">
         <thead>
             <tr>
+                <th style="width: 10px">
+                    <label style=" font-size:16px;">Chọn</label>
+                </th>
                 <th style="width: 50px">ID</th>
                 <th>Họ tên</th>
                 <th>Địa chỉ</th>
@@ -228,6 +234,31 @@
         </div>
         </div>
 <!-- ChangePass Form End -->
+<!-- Search Form Start -->
+<div class="modal fade" id="search_user_form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tìm kiếm người dùng:</h5>
+                
+            </div>
+                <div class="modal-body">
+                    <form id="search_user_form" action="{{route('search')}}" method="get">
+                    <div class="form-group">
+                            <label for="name">Nhập nội dung cần tìm</label>
+                            <input type="text" class="form-control" name="search_string" id="search_string" placeholder="Tên hoặc số điện thoại">
+                        </div>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="submit" class="search_user_submit btn btn-primary">Tìm kiếm</button>
+                        </div>
+                        @csrf
+                    </form>
+                </div>
+            
+            </div>
+        </div>
+        </div>
+<!-- Search Form End -->
     {!! $users->links('pagination::bootstrap-4') !!}
     <script src="{{asset('backend/admin/js/user.js')}}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 

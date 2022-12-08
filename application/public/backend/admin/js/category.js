@@ -50,7 +50,7 @@ function fetchCate(){
         });
         
         if(currentChecked.length==allid.length || currentChecked.length==allid.length+1)
-            $('#select_all').prop('checked',true);
+            $('#select_all_categories').prop('checked',true);
         }
     });
 } 
@@ -93,10 +93,10 @@ $(document).on('click', '#add_button', function(){
             
             localStorage.setItem('arraytoChecked',selectedChecked); 
         } else {
-            localStorage.clear('arraytoChecked');
+            localStorage.removeItem('arraytoChecked');
             $('.checkbox-category').prop('checked',false);
             selectedChecked = [];
-            localStorage.clear();
+            localStorage.removeItem('arraytoChecked');
         }
     })
 //unselect-all Button
@@ -112,17 +112,18 @@ $(document).on('click', '#add_button', function(){
 function selected(id)
 {
     selectedChecked=currentChecked;
+    
     $(document).on('click','#key'+id, function(){
         if (selectedChecked.includes(id)){
             selectedChecked.splice(selectedChecked.indexOf(id),1);
             
-            $('#select_all').prop('checked',false);
+            $('#select_all_categories').prop('checked',false);
         } else selectedChecked.push(id);
         localStorage.setItem('arraytoChecked',selectedChecked);
         if((selectedChecked.length == allid.length))
-            $('#select_all').prop('checked',true);
+            $('#select_all_categories').prop('checked',true);
         else if(selectedChecked.length == 0)
-            localStorage.clear('arraytoChecked');
+            localStorage.removeItem('arraytoChecked');
     })  
 }
 //DeleteMany Function
@@ -160,12 +161,17 @@ function removeManyRow(id, url){
                         $.each(id,function(key,item){
                             $(`#${item}`).remove();
                         })
-                        localStorage.clear();
+                        localStorage.removeItem('arraytoChecked');
                     }
-                    else{
-                        alert('Xoá lỗi. Vui lòng thử lại');
-                    }
+                },
+                error: function(){
+                    Swal.fire(
+                        'Thất bại!',
+                        'Xóa danh mục thất bại.',
+                        'error'
+                    )
                 }
+
             })
         }
       })
@@ -273,9 +279,6 @@ function removeRow(id, url){
                             'success'
                         )
                         $(`#${id}`).remove();
-                    }
-                    else{
-                        alert('Xoá lỗi. Vui lòng thử lại');
                     }
                 },
                 error: function(){

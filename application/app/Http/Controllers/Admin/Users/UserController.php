@@ -25,6 +25,13 @@ class UserController extends Controller
                 'users' => $this->userService->getALL()
             ]); 
     }
+    public function getAll()
+    {
+        $users = $this->userService->getall_nopagenigate();
+        return response() -> json([
+            'users'=>$users
+        ]);
+    }
     public function create()
     {
             return view('Admin.User.create',[
@@ -40,12 +47,25 @@ class UserController extends Controller
     public function destroy(Request $request)
     {
         $result=$this->userService->destroy($request);
-        if( $result){
+        if ($result){
             return response()->json([
                 'error'=> false,
                 'message'=>"Xóa thành công"
             ]);
+        } else
+        return response()->json([
+            'error'=>true
+        ]);
     }
+    public function destroyMany(Request $request)
+    {
+        $result=$this->userService->destroyMany($request);
+        if ($result){
+            return response()->json([
+                'error'=> false,
+                'message'=>"Xóa thành công"
+            ]);
+        }
         return response()->json([
             'error'=>true
         ]);
@@ -63,12 +83,18 @@ class UserController extends Controller
         $result = $this->userService->update($request,$user);
         return $result;
     }
-    // public function changePass_edit(User $user)
-    // {
-    //        return view('Admin.User.changePass',[
-    //             'title' => "Thay đổi mật khẩu người dùng: ". $user->name
-    //        ]);
-    // }
+    public function search(Request $request)
+    {
+        $users= $this->userService->search($request);
+        if ($users!=null){
+        return view('Admin.User.list',[
+            'title' => "Kết quả tìm kiếm",
+            'users' => $users
+        ]); 
+    } else {
+        return false;
+    }
+    }
     public function changePass(ChangePassRequest $request,  $user_id)
     {
         $user = $this->userService->find($user_id);

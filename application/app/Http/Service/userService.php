@@ -19,6 +19,10 @@ class userService
     {
         return $this->userRepository->getAll();
     }
+    public function getall_nopagenigate()
+    {
+        return $this->userRepository->getall_nopagenigate();
+    }
     public function create($request)
     {
         $slug = false;
@@ -54,6 +58,14 @@ class userService
             return $this->userRepository->delete($id);
         } 
         return false;
+    }
+    public function destroyMany($request)
+    {
+       return $this->userRepository->destroyMany($request);
+    }
+    public function search($request)
+    {
+        return $this->userRepository->search($request);
     }
     public function update($request,$user)
     {

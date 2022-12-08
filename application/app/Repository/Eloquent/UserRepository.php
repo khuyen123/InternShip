@@ -39,4 +39,25 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return true;
     }
    }
+   public function getall_nopagenigate()
+   {
+        return User::orderby('id')->paginate(100000);
+   }
+   public function destroyMany($request)
+   {
+        try {
+            return User::destroy($request->id); 
+        } catch (\Throwable $th) {
+            return false;
+        }
+   }
+   public function search($request)
+   {
+        $users = User::query()
+            ->where('name', 'LIKE', "%{$request->search_string}%") 
+            ->orWhere('SDT', 'LIKE', "%{$request->search_string}%")
+            ->orWhere('email', 'LIKE', "%{$request->search_string}%") 
+            ->paginate(5);
+            return $users;
+   }
 }

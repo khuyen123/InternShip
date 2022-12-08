@@ -55,13 +55,16 @@ Route::middleware(['auth'])->group(function(){
             'middleware' => 'admin'
         ],function()  {
             Route::get('/index',[UserController::class,'index']);
+            Route::get('/getAll',[UserController::class,'getAll']);
             Route::get('/create',[UserController::class,'create']);
+            Route::get('/search',[UserController::class,'search'])->name('search');
             Route::post('/create',[UserController::class,'store']);
             Route::get('/find/{id}',[UserController::class,'find']);
             Route::get('/edit/changePass/{user}',[UserController::class,'changePass_edit']);
             Route::post('/edit/changePass/{user_id}',[UserController::class,'changePass']);
             Route::post('/edit/{user_id}',[UserController::class,'update']);
             Route::DELETE('/delete',[UserController::class,'destroy']);
+            Route::DELETE('/deleteMany',[UserController::class,'destroyMany']);
         });
     });
 });

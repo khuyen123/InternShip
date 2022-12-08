@@ -1,3 +1,15 @@
+var selectedUserOnPage = [];
+var selectedUserOnLocal = [];
+var alluserid = [];
+//Get Current selected user onlocal storage:
+if(localStorage.getItem('arrayOfSelectedUser')!=null ){
+        $.each(localStorage.getItem('arrayOfSelectedUser').split(','),function(key,item){
+            selectedUserOnLocal.push(parseInt(item));
+            $('#user'+item).prop('checked',true);
+        })
+        selectedUserOnPage = selectedUserOnLocal;
+        alluserid = selectedUserOnLocal;
+    }
 //Loadingpage
 $(document).ready(function(){
     loadingpage();
@@ -19,7 +31,6 @@ function removeUser(id, url){
         cancelButtonColor: '#d33',
         confirmButtonText: 'Xác nhận!'
       }).then((result) => {
-        
         if (result.isConfirmed) {
             $.ajax({
                 type: 'DELETE',
@@ -33,16 +44,21 @@ function removeUser(id, url){
                             'Đã xóa thành công người dùng.',
                             'success'
                         )
-                        $(`#${id}`).remove();
+                            $(`#${id}`).remove();
+                            selectedUserOnPage.splice(selectedUserOnPage.indexOf(id),1);
+                        localStorage.setItem('arrayOfSelectedUser',selectedUserOnPage);
+                        
                     }
                     
                 },
                 error:
+                    function(){
                     Swal.fire(
                         'Thất Bại!',
                         'Xóa người dùng thất bại',
                         'error'
                     )
+                }
             })
         }
       })
@@ -141,6 +157,7 @@ $(document).on('click','.submit_edit_user',function(e){
 //ChangePassword:
 $(document).on('click','#change_pass_button',function(){
     $('#change_password_form').modal('show');
+    $('#edit_user_form').modal('hide');
     var user_id = $('#edit_user_id').val();
     $.ajax({
         type: "Get",
@@ -201,3 +218,62 @@ $(document).on('click','.submit_create_user', function(){
         }
     })
 })
+//Select All User:
+$(document).on('click','#selectall_user', function(){
+    
+    $.ajax({
+        type: "GET",
+        url: "getAll",
+        datatype: "Json",
+        success: function(response){   
+            $.each(response.users.data,function(key,user){
+                $('#user'+user.id).prop('checked',true);
+                if ( !selectedUserOnPage.includes(user.id) & user.roles!=1)
+                    selectedUserOnPage.push(user.id);
+            })
+            localStorage.setItem('arrayOfSelectedUser',selectedUserOnPage);
+        }
+    })
+})
+//unSelect All User:
+$(document).on('click','#unselectall_user', function(){
+    $.each(selectedUserOnPage,function(key,item){
+        $('#user'+item).prop('checked',false)
+    })
+    
+    selectedUserOnPage = [];
+    localStorage.removeItem('arrayOfSelectedUser');
+    
+})
+//Select Many User
+$(document).on('click','.checkbox_user', function(){
+    var user_id = parseInt($(this).val());
+    
+    if (selectedUserOnPage.includes(user_id)){
+        selectedUserOnPage.splice(selectedUserOnPage.indexOf(user_id),1);
+        
+    } else if(user_id!=1){
+        selectedUserOnPage.push(user_id);
+    }
+    if (selectedUserOnPage.length == 0)
+            localStorage.removeItem('arrayOfSelectedUser'); else
+    localStorage.setItem('arrayOfSelectedUser',selectedUserOnPage);
+    
+})
+//Delete Many Button:
+$(document).on('click','#delete_all_user', function(){
+    if(selectedUserOnPage.length !=0)
+    removeUser(selectedUserOnPage,"deleteMany");
+    localStorage.removeItem('arrayOfSelectedUser');
+})
+//Search Form Show
+$(document).on('click','#search_user_button', function(){
+    $('#search_user_form').modal('show');
+})
+//Submit Search Form
+// $(document).on('click','.search_user_submit', function(){
+//     $.ajax({
+//         type: "GET",
+//         data: 
+//     })
+// })
