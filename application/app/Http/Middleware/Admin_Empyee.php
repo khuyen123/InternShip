@@ -23,7 +23,7 @@ class Admin_Empyee
                 return $next($request);   
             } 
             return redirect('admin/home');
-            } 
+        } 
         return redirect('admin/user/login');       
     }
 }

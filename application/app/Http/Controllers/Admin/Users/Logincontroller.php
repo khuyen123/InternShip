@@ -27,13 +27,16 @@ class Logincontroller extends Controller
     {
         if( Auth::attempt([
             'email' => $request ->input('email'),
-            'password' =>$request ->input('password')
+            'password' =>$request ->input('password'),
         ],$request->input('remember'))) {
-            
-           
-                return redirect()->route('home');
-        } else
-            Session::flash('error','Tài khoản hoặc mật khẩu không chính xác');
+            if(Auth::user()->status == 1)
+                return redirect()->route('home'); else{
+                    Auth::logout();
+                    Session::flash('error','Tài khoản chưa kích hoạt ');
+                }
+
+        }  else
+            Session::flash('error','Tài khoản hoặc mật khẩu không chính xác ');
         return redirect()->back();
     }
    public function logout()

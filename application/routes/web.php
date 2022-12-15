@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\Users\Logincontroller;
 use App\Http\Controllers\Admin\Users\UserController;
 use App\Models\Categories;
+use GuzzleHttp\Psr7\Request;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,6 +27,8 @@ Route::post('admin/user/login/store',[Logincontroller::class,'store']);
 //Route đăng ký
 Route::get('admin/user/register',[UserController::class,'register']);
 Route::post('admin/user/register/store',[UserController::class,'register_store']);
+//email Verify:
+Route::get('admin/user/active/{user}/{token}',[UserController::class,'activeAccount'])->name('active_account');
 //Check Đăng nhập
 Route::middleware(['auth'])->group(function(){
     //Group admin

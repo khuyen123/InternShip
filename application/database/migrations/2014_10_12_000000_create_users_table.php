@@ -26,6 +26,7 @@ class CreateUsersTable extends Migration
             $table->string('DiaChi')->nullable();
             $table->date('NgaySinh')->nullable();
             $table->integer('status')->nullable();
+            $table->string('token')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

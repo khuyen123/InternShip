@@ -1,5 +1,6 @@
 var selectedUserOnPage = [];
 var selectedUserOnLocal = [];
+var alluser=[];
 var alluserid = [];
 //Get Current selected user onlocal storage:
 if(localStorage.getItem('arrayOfSelectedUser')!=null ){
@@ -43,10 +44,13 @@ function removeUser(id, url){
                             'ĐÃ xóa!',
                             'Đã xóa thành công người dùng.',
                             'success'
-                        )
-                            $(`#${id}`).remove();
+                        ).then(function(){
                             selectedUserOnPage.splice(selectedUserOnPage.indexOf(id),1);
-                        localStorage.setItem('arrayOfSelectedUser',selectedUserOnPage);
+                            localStorage.setItem('arrayOfSelectedUser',selectedUserOnPage);
+                            location.reload();
+                        })
+                            
+                            
                         
                     }
                     
@@ -270,10 +274,35 @@ $(document).on('click','#delete_all_user', function(){
 $(document).on('click','#search_user_button', function(){
     $('#search_user_form').modal('show');
 })
-//Submit Search Form
-// $(document).on('click','.search_user_submit', function(){
-//     $.ajax({
-//         type: "GET",
-//         data: 
-//     })
-// })
+//Funtion get all user:
+function getalluser()
+{
+    $.ajax({
+        type: "GET",
+        url: "getAll",
+        datatype: "Json",
+        success: function(response){
+            alluser = response.users.data;
+        }
+    })
+}
+//getAll userL to localstorage:
+$(document).ready(function(){
+    getalluser();
+})
+//Suggest Search User:
+$(document).on('keyup','#search_user_string',function(){
+    
+    var text= $('#search_user_string').val();
+    let arr = [];
+    let html = '';
+    if(text.length > 0) {
+        arr = alluser.filter(user => user.name.toLowerCase().search(text.toLowerCase()) >= 0);
+    } 
+    if(arr.length > 0){
+        $.each(arr, function(key,item){
+            html += `<li><a>${item.name}</a></li>`;
+        })
+    }
+    $('#suggest_search_user').html(html);
+})

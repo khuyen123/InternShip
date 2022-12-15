@@ -37,6 +37,7 @@ class userService
         if( !$slug){
         $password = Hash::make( $request->input('password'));  
         $data['password'] = $password; 
+        $data['token'] = strtoupper(Str::random(10));
         try {
             $this->userRepository->create($data);
             Session::flash('success',"Thêm mới thành công");
@@ -45,6 +46,32 @@ class userService
             return false;
         }
         return true;
+    } else {
+        Session::flash('error',"Email đã tồn tại");
+        return false;
+    }
+    }
+    public function register($data)
+    {
+        $slug = false;
+        $users=$this->getALL();
+        foreach($users as $item => $user)
+        {
+            if($user->email == $data['email']){
+                $slug = true;
+            } 
+        }
+        if( !$slug){
+        $data['password'] = Hash::make( $data['password']); 
+        try {
+            
+            return $this->userRepository->create($data);
+            
+        } catch (\Throwable $th) {
+            Session::flash('error',"Thêm mới thất bại");
+            return false;
+        }
+        
     } else {
         Session::flash('error',"Email đã tồn tại");
         return false;
@@ -67,10 +94,9 @@ class userService
     {
         return $this->userRepository->search($request);
     }
-    public function update($request,$user)
+    public function update($data,$user)
     {
-        $data = $request->all();
-        
+     
         $this->userRepository->update($user,$data);
        
         return true;

@@ -246,10 +246,15 @@
                     <form id="search_user_form" action="{{route('search')}}" method="get">
                     <div class="form-group">
                             <label for="name">Nhập nội dung cần tìm</label>
-                            <input type="text" class="form-control" name="search_string" id="search_string" placeholder="Tên hoặc số điện thoại">
+                            <input type="text" class="form-control" name="search_string" id="search_user_string" placeholder="Tên hoặc số điện thoại">
+                        </div>
+                        <div class="form-group" >
+                                <ul id="suggest_search_user" style="list-style:none;">
+
+                                </ul>
                         </div>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                            <button type="submit" class="search_user_submit btn btn-primary">Tìm kiếm</button>
+                            <button type="submit" class="search_user_submit btn btn-primary"><i class="fa fa-search" >Tìm kiếm</i></button>
                         </div>
                         @csrf
                     </form>

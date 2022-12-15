@@ -59,10 +59,6 @@
             <div class="form-group">
                 <label>Quyền truy cập</label>
                 <div class="custom-control custom-radio">
-                    <input class="custom-control-input" value=2 type="radio" id="employee" name="roles" checked="">
-                    <label for="employee" class="custom-control-label">Nhân viên</label>
-                </div>
-                <div class="custom-control custom-radio">
                     <input class="custom-control-input" value=3 type="radio" id="client" name="roles" checked="">
                     <label for="client" class="custom-control-label">Khách hàng</label>
                 </div>

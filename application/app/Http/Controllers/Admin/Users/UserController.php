@@ -9,7 +9,9 @@ use App\Http\Service\userService;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {   
@@ -80,7 +82,8 @@ class UserController extends Controller
     public function update($user_id, UpdateRequest $request) 
     {
         $user = $this->userService->find($user_id);
-        $result = $this->userService->update($request,$user);
+        $data=$request->all();
+        $result = $this->userService->update($data,$user);
         return $result;
     }
     public function search(Request $request)
@@ -109,10 +112,30 @@ class UserController extends Controller
     }
     public function register_store(CreateRequest $request)
     {
-        if($this->userService->create($request)){
+        
+        $data=$request->all();
+        $data['token']= strtoupper(Str::random(10));
+        if( $new_user = $this->userService->register($data)){
+            Mail::send('Admin.email.active_account',compact('new_user'),function($email) use ($new_user){
+                $email->subject('Xác nhận tài khoản đăng ký');
+                $email->to($new_user->email, $new_user->name);
+            });
+            Session::flash('success',"Đăng ký thành công, vui lòng vào email để xác thực");
             return redirect('admin/user/login');
-            Session::flash('success',"Đăng ký thành công");
-        } else return redirect()->back();
+            
+        } else {
+            return redirect()->back();
+        }
+    }
+    public function activeAccount(User $user,$token){
+        $data['status']=1;
+        $data['token'] = '';
+        if ($token == $user->token){
+            $this->userService->update($data,$user);
+            Session::flash('success','Xác thực thành công, bạn có thể đăng nhập');
+            return redirect('admin/user/login');
+            
+        }
     }
     public function find($id)
     {
